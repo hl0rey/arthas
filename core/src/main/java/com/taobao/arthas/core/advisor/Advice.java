@@ -9,7 +9,7 @@ public class Advice {
     private final Class<?> clazz;
     private final ArthasMethod method;
     private final Object target;
-    private final Object[] params;
+    public Object[] params;
     private final Object returnObj;
     private final Throwable throwExp;
     private final boolean isBefore;

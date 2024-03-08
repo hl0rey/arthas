@@ -72,6 +72,7 @@ public class TimeTunnelCommand extends EnhancerCommand {
     // watch the index TimeTunnel
     private String watchExpress = com.taobao.arthas.core.util.Constants.EMPTY_STRING;
     private String searchExpress = com.taobao.arthas.core.util.Constants.EMPTY_STRING;
+    private String ognlExpress = com.taobao.arthas.core.util.Constants.EMPTY_STRING;
     // play the index TimeTunnel
     private boolean isPlay = false;
     // delete the index TimeTunnel
@@ -186,6 +187,11 @@ public class TimeTunnelCommand extends EnhancerCommand {
         this.replayInterval = replayInterval;
     }
 
+    @Option(shortName = "g",longName = "ognl")
+    @Description("execute OGNL expressions on replay tt")
+    public void setOgnlExpress(String ognlExpress) {
+        this.ognlExpress = ognlExpress;
+    }
 
     public boolean isRegEx() {
         return isRegEx;
@@ -226,6 +232,8 @@ public class TimeTunnelCommand extends EnhancerCommand {
     private boolean hasSearchExpress() {
         return !StringUtils.isEmpty(searchExpress);
     }
+
+    private boolean hasOgnlExpress(){return !StringUtils.isEmpty(ognlExpress);}
 
     /**
      * 检查参数是否合法
@@ -490,6 +498,10 @@ public class TimeTunnelCommand extends EnhancerCommand {
         ArthasMethod method = advice.getMethod();
         boolean accessible = advice.getMethod().isAccessible();
         try {
+            if (hasOgnlExpress()){
+                process.write("[*]execute ognl express: "+ognlExpress+"\n");
+                process.write("[*]the result: "+ExpressFactory.threadLocalExpress(advice).get(ognlExpress).toString()+"\n");
+            }
             if (!accessible) {
                 method.setAccessible(true);
             }
